@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font stack for modern look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white p-8 rounded-xl shadow-2xl">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-6 text-center">
+            Register Account
+        </h2>
+        
+        <form id="registrationForm" onsubmit="validateForm(event)" class="space-y-6">
+
+            <!-- Field: First Name -->
+            <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Min 6 alphabetic characters"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                <p id="firstNameError" class="text-red-600 text-xs mt-1 h-4"></p>
+            </div>
+
+            <!-- Field: Last Name -->
+            <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Required"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                <p id="lastNameError" class="text-red-600 text-xs mt-1 h-4"></p>
+            </div>
+
+            <!-- Field: E-mail ID -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail ID</label>
+                <input type="text" id="email" name="email" placeholder="name@domain.com"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                <p id="emailError" class="text-red-600 text-xs mt-1 h-4"></p>
+            </div>
+
+            <!-- Field: Password -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" id="password" name="password" placeholder="Min 6 characters"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                <p id="passwordError" class="text-red-600 text-xs mt-1 h-4"></p>
+            </div>
+
+            <!-- Field: Mobile Number -->
+            <div>
+                <label for="mobile" class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                <input type="text" id="mobile" name="mobile" maxlength="10" placeholder="Exactly 10 digits"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                <p id="mobileError" class="text-red-600 text-xs mt-1 h-4"></p>
+            </div>
+
+            <!-- Field: Address -->
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <textarea id="address" name="address" rows="3" placeholder="Required"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 resize-none"></textarea>
+                <p id="addressError" class="text-red-600 text-xs mt-1 h-4"></p>
+            </div>
+
+            <!-- Submission Message Box -->
+            <div id="submissionMessage" class="hidden p-4 rounded-lg text-center font-semibold" role="alert"></div>
+
+            <!-- Submit Button -->
+            <button type="submit"
+                class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Submit Registration
+            </button>
+
+        </form>
+    </div>
+
+    <script>
+        /**
+         * Clears all previous error messages and the submission message.
+         */
+        function clearErrors() {
+            document.querySelectorAll('.text-red-600').forEach(el => el.textContent = '');
+            const msgBox = document.getElementById('submissionMessage');
+            msgBox.classList.add('hidden');
+            msgBox.textContent = '';
+        }
+
+        /**
+         * Displays a specific error message under the corresponding input field.
+         * @param {string} fieldId - The ID of the input field (used to find its error element).
+         * @param {string} message - The error message to display.
+         */
+        function displayError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            if (errorElement) {
+                errorElement.textContent = message;
+                // Add visual error cue to the input field itself
+                const inputElement = document.getElementById(fieldId);
+                if (inputElement) {
+                    inputElement.classList.add('border-red-500');
+                    inputElement.classList.remove('border-gray-300');
+                }
+            }
+        }
+
+        /**
+         * Hides the error message and resets the border for a valid field.
+         * @param {string} fieldId - The ID of the input field.
+         */
+        function clearFieldValidation(fieldId) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            if (errorElement) {
+                errorElement.textContent = '';
+            }
+            const inputElement = document.getElementById(fieldId);
+            if (inputElement) {
+                inputElement.classList.remove('border-red-500');
+                inputElement.classList.add('border-gray-300');
+            }
+        }
+
+        /**
+         * Main function to validate the form fields on submission.
+         * @param {Event} event - The form submission event.
+         */
+        function validateForm(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Clear previous errors and messages
+            clearErrors();
+            
+            // Re-clear field borders for a fresh check
+            ['firstName', 'lastName', 'password', 'email', 'mobile', 'address'].forEach(clearFieldValidation);
+
+            let isValid = true;
+
+            // --- Get Field Values ---
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            // ----------------------------------------------------
+            // 1. First Name Validation (Alphabets only, length >= 6)
+            // ----------------------------------------------------
+            const nameRegex = /^[A-Za-z]+$/; // Alphabets only regex
+            if (firstName.length < 6) {
+                displayError('firstName', 'Name must be at least 6 characters long.');
+                isValid = false;
+            } else if (!nameRegex.test(firstName)) {
+                displayError('firstName', 'Name must contain only alphabetic characters.');
+                isValid = false;
+            }
+
+            // ----------------------------------------------------
+            // 2. Last Name Validation (Required/Not Empty)
+            // ----------------------------------------------------
+            if (lastName === "") {
+                displayError('lastName', 'Last Name is required and cannot be empty.');
+                isValid = false;
+            }
+
+            // ----------------------------------------------------
+            // 3. Password Validation (Length >= 6)
+            // ----------------------------------------------------
+            if (password.length < 6) {
+                displayError('password', 'Password must be at least 6 characters long.');
+                isValid = false;
+            }
+
+            // ----------------------------------------------------
+            // 4. E-mail ID Validation (Standard pattern)
+            // ----------------------------------------------------
+            // Standard email pattern: simple check for name@domain.tld
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+            if (email === "") {
+                displayError('email', 'Email is required.');
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                displayError('email', 'Please enter a valid email address (e.g., name@domain.com).');
+                isValid = false;
+            }
+
+            // ----------------------------------------------------
+            // 5. Mobile Number Validation (Exactly 10 digits)
+            // ----------------------------------------------------
+            // Regex for exactly 10 digits, no other characters allowed
+            const mobileRegex = /^\d{10}$/;
+            if (!mobileRegex.test(mobile)) {
+                displayError('mobile', 'Mobile number must contain exactly 10 digits.');
+                isValid = false;
+            }
+
+            // ----------------------------------------------------
+            // 6. Address Validation (Required/Not Empty)
+            // ----------------------------------------------------
+            if (address === "") {
+                displayError('address', 'Address is required and cannot be empty.');
+                isValid = false;
+            }
+
+            // ----------------------------------------------------
+            // Final Submission Handling
+            // ----------------------------------------------------
+            const msgBox = document.getElementById('submissionMessage');
+            if (isValid) {
+                // Form is valid! Display success message
+                msgBox.classList.remove('hidden', 'bg-red-100', 'text-red-800');
+                msgBox.classList.add('bg-green-100', 'text-green-800');
+                msgBox.textContent = 'Registration successful! Data is valid.';
+                
+                // In a real application, you would send data to the server here:
+                // console.log('Sending data to server:', { firstName, lastName, password, email, mobile, address });
+
+                // Optional: Reset form fields after success
+                // document.getElementById('registrationForm').reset();
+            } else {
+                // Form is invalid! Display general error message
+                msgBox.classList.remove('hidden', 'bg-green-100', 'text-green-800');
+                msgBox.classList.add('bg-red-100', 'text-red-800');
+                msgBox.textContent = 'Please correct the errors in the fields above.';
+            }
+
+            return isValid;
+        }
+    </script>
+</body>
+</html>
